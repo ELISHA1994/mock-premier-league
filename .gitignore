@@ -1,0 +1,12 @@
+node_modules
+.env
+package-lock.json
+coverage
+.nyc_output
+dist
+# editor files
+.editorconfig
+# editor files
+
+.idea/
+data/
