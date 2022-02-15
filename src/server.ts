@@ -6,7 +6,7 @@ import dotenv from "dotenv/config";
 import {default as logger} from 'morgan'
 import { createStream } from "rotating-file-stream";
 import {default as DGB, default as DBG} from "debug";
-import {normalize, onError, onListening} from "./utils/utils";
+import {basicErrorHandler, handle404, normalize, onError, onListening} from "./utils/utils";
 
 const debug = DGB('server:debug');
 // const dbgerror = DGB('server:dbgerror');
@@ -38,6 +38,11 @@ app.use(logger(process.env.REQUEST_LOG_FORMAT || 'common', {
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
 });
+
+
+// Error handling
+app.use(handle404);
+app.use(basicErrorHandler);
 
 export const server = http.createServer(app);
 server.listen(port);

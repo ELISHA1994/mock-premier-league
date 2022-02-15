@@ -1,9 +1,10 @@
-// import 'NodeJS';
+import {Errback, Request, Response, NextFunction, ErrorRequestHandler} from "express";
+import debug from "debug";
 import { port, server } from "../server";
-import { default as DGB } from "debug";
+import messages from "./messages";
 
-const debug = DGB('server:debug');
-const dbgerror = DGB('server:dbgerror');
+const log: debug.IDebugger = debug('server:debug');
+const logerror: debug.IDebugger = debug('server:dbgerror');
 
 export function normalize(val: string): number | boolean | string {
     const port: number = parseInt(val, 10);
@@ -17,7 +18,7 @@ export function normalize(val: string): number | boolean | string {
 }
 
 export function onError(error: NodeJS.ErrnoException): void {
-    dbgerror(error);
+    logerror(error);
     if (error.syscall !== 'listen') {
         throw error
     }
@@ -45,5 +46,25 @@ export function onListening(): void {
     const bind: string = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug(`Listening on ${bind}`);
+    log(`Server started on ${bind}`);
+    log(`${messages.listenToServer}:${port}`)
+}
+
+export function handle404(req: Request, res: Response): void {
+    res.status(404).json({
+        status: 'error',
+        data: { message: messages.notFound }
+    })
+}
+
+// export function basicErrorHandler(err: Errback, req: Request, res:  Response, next: NextFunction) {
+//     console.error("Error: ", err);
+//     return res.status()
+// }
+export const basicErrorHandler: ErrorRequestHandler = (err: Errback, req: Request, res:  Response, next: NextFunction) => {
+    console.error("Error: ", err);
+    res.status(500).json({
+        status: 'error',
+        data: { message: messages.serverError }
+    })
 }
