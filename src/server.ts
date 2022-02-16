@@ -2,12 +2,16 @@ import http from "http";
 import path from "path";
 import express, {Request, Response, Application} from 'express';
 import cors from "cors";
-import dotenv from "dotenv/config";
+import dotenv from "dotenv";
 import {default as logger} from 'morgan'
 import { createStream } from "rotating-file-stream";
 import {default as DGB, default as DBG} from "debug";
+
+import userRoute from "./routes/user.route";
+import connect from "./database/db";
 import {basicErrorHandler, handle404, normalize, onError, onListening} from "./utils/utils";
 
+dotenv.config();
 const debug = DGB('server:debug');
 // const dbgerror = DGB('server:dbgerror');
 
@@ -15,6 +19,10 @@ const debug = DGB('server:debug');
  * Create Express instance
  */
 const app: Application = express();
+
+// Db connectivity
+// @ts-ignore
+connect();
 
 // Setting api Port;
 export const port = normalize(process.env.PORT || '1337');
@@ -35,6 +43,10 @@ app.use(logger(process.env.REQUEST_LOG_FORMAT || 'common', {
         : process.stdout
 }));
 
+// API ROUTES
+app.use('/api/v1/user', userRoute);
+
+// Home Page
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
 });
