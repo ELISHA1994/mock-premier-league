@@ -16,3 +16,12 @@ export const userSignupValidator: Array<any> = [
         .isEmpty()
         .withMessage('lastName is required')
 ];
+
+export const userSigninValidator: Array<any> = [
+    check('email')
+        .isEmail()
+        .withMessage('Must be a valid email address'),
+    check('password')
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters long')
+];

@@ -91,6 +91,6 @@ db.usermodels.insertMany([
 //         firstName: 'James',
 //     lastName: 'Williams',
 //     email: 'jammy@gmail.com',
-//     password: Helper.hashPassword('jammy022022'),
+//     password: Helper.hashPassword('jammy11167'),
 //     isAdmin: false,
 // },

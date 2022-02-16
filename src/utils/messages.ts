@@ -9,12 +9,16 @@ interface Messages {
     error: string,
     tokenExpired: string,
     unAuthorized: string,
-    tokenError: string
+    tokenError: string,
+    IncorrectLoginDetails: string,
+    userAuthorized: string,
+    userNotFound: string,
 }
 
 const messages: Messages = {
     welcome: "Welcome to Mock Premier League",
     notFound: "Wrong request. Route does not exist",
+    userNotFound: "User does not exist",
     serverError: "Internal server error",
     listenToServer: "listening to server on 127.0.0.1",
     failedToConnect: 'failed to connect to database',
@@ -24,6 +28,8 @@ const messages: Messages = {
     unAuthorized: 'You have to login',
     tokenError: 'Invalid token provided',
     tokenExpired: 'Expired token',
+    IncorrectLoginDetails: 'Email or Password is incorrect',
+    userAuthorized: 'You are now logged in',
 }
 
 export default messages
