@@ -14,8 +14,9 @@ import {generateToken} from "../middlewares/Authentication";
  * @example
  */
 export const CreateUser: RequestHandler = async (req: Request, res: Response) => {
+    //Todo: Remove isAdmin
     const {
-        email, password, firstName, lastName
+        email, password, firstName, lastName, isAdmin
     } = req.body;
     try {
         const user = new User({
@@ -23,19 +24,18 @@ export const CreateUser: RequestHandler = async (req: Request, res: Response) =>
             email,
             password: Helper.hashPassword(password),
             firstName,
-            lastName
+            lastName,
+            isAdmin,
         })
         const token = generateToken(user._id, user.email, user.isAdmin);
 
-        const doc = await user.save();
-        if (doc) {
-            return res.status(201).json({
-                status: "success",
-                data: {
-                    token
-                }
-            })
-        }
+        await user.save();
+        return res.status(201).json({
+            status: "success",
+            data: {
+                token
+            }
+        })
     } catch (error) {
         if (error.errors.email.name === 'ValidatorError') {
             return res.status(409).json({
@@ -90,3 +90,46 @@ export const LoginUser: RequestHandler = async (req: Request, res: Response) => 
         })
     }
 }
+
+// 620cda5dacbe09972769f2ce
+// 620d22cb0796adfa8df3c336
+// 620dfcd84b8453b981012e79
+// 620e0207ca75d419aa2c3b94
+export const DeleteUser: RequestHandler = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    try {
+        // @ts-ignore
+        if (!req.user.isAdmin) {
+            return res.status(400).json({
+                status: 'error',
+                body: { message: messages.unAuthorizedRoute }
+            })
+        }
+        const user = await User.findOneAndDelete({ _id: userId }).exec();
+        if (!user) {
+            return res.status(404).json({
+                status: 'error',
+                data: { message: messages.notFound }
+            })
+        }
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                message: messages.userDeleteMessage
+            }
+        })
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                status: 'error',
+                data: { message: messages.castError }
+            })
+        }
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjBlMTM5YmYxOTE0NjE1ZjM3NDdmMWQiLCJlbWFpbCI6ImFkbWluMkBnbWFpbC5jb20iLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NDUwODk3NjMsImV4cCI6MTY0NTE3NjE2M30.xnTzWuivIkRQyfxDCnghT8nBii6eJ4nDDt0xxCwyY7g

@@ -13,13 +13,13 @@ export  function generateToken(_id: string, email: string, isAdmin: boolean): st
 
 export async function verifyToken(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-        const token = req.headers.authorization.split(' ')[1];
-        if (!token) {
-            return res.status(403).json({
+        if (!req.headers.authorization) {
+            return res.status(401).json({
                 status: 'error',
                 data: {message: messages.unAuthorized}
             });
         }
+        const token = req.headers.authorization.split(' ')[1];
 
         // verify user provided token against existing token
         const decoded = await jwt.verify(token, process.env.SECRET_KEY);

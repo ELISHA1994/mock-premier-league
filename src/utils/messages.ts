@@ -13,6 +13,9 @@ interface Messages {
     IncorrectLoginDetails: string,
     userAuthorized: string,
     userNotFound: string,
+    unAuthorizedRoute: string,
+    userDeleteMessage: string,
+    castError: string
 }
 
 const messages: Messages = {
@@ -30,6 +33,9 @@ const messages: Messages = {
     tokenExpired: 'Expired token',
     IncorrectLoginDetails: 'Email or Password is incorrect',
     userAuthorized: 'You are now logged in',
+    unAuthorizedRoute: 'You do not have permission to this route',
+    userDeleteMessage: 'Successfully deleted',
+    castError: 'Invalid ID',
 }
 
 export default messages
