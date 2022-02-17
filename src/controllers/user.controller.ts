@@ -113,7 +113,7 @@ export const GetUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         // @ts-ignore
         if (!req.user.isAdmin) {
-            return res.status(400).json({
+            return res.status(403).json({
                 status: 'error',
                 body: { message: messages.unAuthorizedRoute }
             })
@@ -158,7 +158,7 @@ export const GetAllUser: RequestHandler = async (req: Request, res: Response): P
     try {
         // @ts-ignore
         if (!req.user.isAdmin) {
-            return res.status(400).json({
+            return res.status(403).json({
                 status: 'error',
                 body: { message: messages.unAuthorizedRoute }
             })
@@ -195,7 +195,7 @@ export const DeleteUser: RequestHandler = async (req: Request, res: Response) =>
     try {
         // @ts-ignore
         if (!req.user.isAdmin) {
-            return res.status(400).json({
+            return res.status(403).json({
                 status: 'error',
                 body: { message: messages.unAuthorizedRoute }
             })
