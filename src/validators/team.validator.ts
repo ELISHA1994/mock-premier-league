@@ -37,3 +37,24 @@ export const addTeamValidator: Array<any> = [
         })
         .withMessage('Please provide a valid name and a valid role for the teamMember')
 ];
+
+export const updateTeamValidator: Array<any> = [
+    check('teamName').optional()
+        .if(check('teamName').exists())
+        .notEmpty().isLength({ min: 3 })
+        .withMessage('Please provide a valid teamName'),
+    check('teamMembers').optional(),
+    check('teamMembers.*.name')
+        .if(check('teamName').exists())
+        .not()
+        .isEmpty()
+        .withMessage('teamMembers.name is required'),
+    check('teamMembers.*.role')
+        .if(check('teamName').exists())
+        .notEmpty()
+        .isString()
+        .custom((role: RoleOptions) => {
+            return Object.values(RoleOptions).includes(role)
+        })
+        .withMessage('Please provide a valid name and a valid role for the teamMember')
+];

@@ -58,6 +58,60 @@ export const AddTeam: RequestHandler = async (req: Request, res: Response): Prom
  *
  * @example
  */
+export const EditTeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+    const { teamName, teamMembers, description } = req.body;
+    try {
+        // @ts-ignore
+        if (!req.user.isAdmin) {
+            return res.status(403).json({
+                status: 'error',
+                body: { message: messages.unAuthorizedRoute }
+            })
+        }
+        const team = await Team.findByIdAndUpdate(
+            { _id: req.params.teamId },
+            {
+                $set: {
+                    teamName,
+                    teamMembers,
+                    description,
+                }
+            },
+            { useFindAndModify: false }
+        ).exec();
+        if (!team) {
+            return res.status(404).json({
+                status: 'error',
+                data: { message: messages.notFound }
+            })
+        }
+        console.log(team);
+        return res.status(200).json({
+            status: 'success',
+            data: { message: messages.updateMessage }
+        })
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                status: 'error',
+                data: { message: messages.castError }
+            })
+        }
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+/**
+ * admin can a remove team
+ * @param {object} req - response object
+ * @param {object} res - response object
+ * @returns {object} returns response
+ *
+ * @example
+ */
 export const RemoveTeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
     const { teamId } = req.params;
     try {

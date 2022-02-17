@@ -18,6 +18,7 @@ interface Messages {
     castError: string;
     duplicateName: string;
     deleteMessage: string;
+    updateMessage: string;
 }
 
 const messages: Messages = {
@@ -39,7 +40,8 @@ const messages: Messages = {
     userDeleteMessage: 'Successfully deleted',
     castError: 'Invalid ID',
     duplicateName: 'team already exist',
-    deleteMessage: 'Sucessfully deleted',
+    deleteMessage: 'Successfully deleted',
+    updateMessage: 'Successfully updated'
 }
 
 export default messages
