@@ -30,6 +30,7 @@ export const CreateUser: RequestHandler = async (req: Request, res: Response) =>
         const token = generateToken(user._id, user.email, user.isAdmin);
 
         await user.save();
+        console.log("User", user);
         return res.status(201).json({
             status: "success",
             data: {
@@ -51,6 +52,14 @@ export const CreateUser: RequestHandler = async (req: Request, res: Response) =>
     }
 }
 
+/**
+ * Login user method
+ * @param {object} req - response object
+ * @param {object} res - response object
+ * @returns {object} returns response
+ *
+ * @example
+ */
 export const LoginUser: RequestHandler = async (req: Request, res: Response) => {
     const { password, email } = req.body;
     try {
@@ -91,10 +100,60 @@ export const LoginUser: RequestHandler = async (req: Request, res: Response) => 
     }
 }
 
-// 620cda5dacbe09972769f2ce
-// 620d22cb0796adfa8df3c336
-// 620dfcd84b8453b981012e79
-// 620e0207ca75d419aa2c3b94
+/**
+ * Get a user method
+ * @param {object} req - request params:- 620e1871925c8349bde219f0
+ * @param {object} res - response object
+ * @returns {object} returns response
+ *
+ * @example
+ */
+export const GetUser: RequestHandler = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    try {
+        // @ts-ignore
+        if (!req.user.isAdmin) {
+            return res.status(400).json({
+                status: 'error',
+                body: { message: messages.unAuthorizedRoute }
+            })
+        }
+        const user = await User.findById({ _id: userId })
+            .select('_id email firstName lastName')
+            .exec()
+        if (!user) {
+            return res.status(404).json({
+                status: 'error',
+                data: { message: messages.notFound}
+            })
+        }
+
+        return res.status(200).json({
+            status: 'success',
+            user
+        })
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                status: 'error',
+                data: { message: messages.castError }
+            })
+        }
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+/**
+ * Delete user method
+ * @param {object} req - response object
+ * @param {object} res - response object
+ * @returns {object} returns response
+ *
+ * @example
+ */
 export const DeleteUser: RequestHandler = async (req: Request, res: Response) => {
     const { userId } = req.params;
     try {

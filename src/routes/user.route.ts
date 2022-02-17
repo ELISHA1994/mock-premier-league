@@ -1,7 +1,7 @@
 import express, {Request, Response, IRouter} from "express";
 import runValidation from "../validators";
 import {userSigninValidator, userSignupValidator} from "../validators/auth.validator";
-import {CreateUser, DeleteUser, LoginUser} from "../controllers/user.controller";
+import {CreateUser, DeleteUser, GetUser, LoginUser} from "../controllers/user.controller";
 import {verifyToken} from "../middlewares/Authentication";
 
 
@@ -12,6 +12,9 @@ router.post('/signup', userSignupValidator, runValidation, CreateUser);
 
 // User Login Routes
 router.post('/login', userSigninValidator, runValidation, LoginUser);
+
+// Get A User Routes
+router.get('/:userId', verifyToken, GetUser);
 
 // Delete User Routes
 router.delete('/:userId', verifyToken, DeleteUser);
