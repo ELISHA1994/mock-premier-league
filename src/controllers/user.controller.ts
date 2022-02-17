@@ -147,6 +147,42 @@ export const GetUser: RequestHandler = async (req: Request, res: Response) => {
 }
 
 /**
+ * Get all user method
+ * @param {object} req - request params:- 620e1871925c8349bde219f0
+ * @param {object} res - response object
+ * @returns {object} returns response
+ *
+ * @example
+ */
+export const GetAllUser: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+    try {
+        // @ts-ignore
+        if (!req.user.isAdmin) {
+            return res.status(400).json({
+                status: 'error',
+                body: { message: messages.unAuthorizedRoute }
+            })
+        }
+        const users = await User.find()
+            .select('email firstName lastName')
+            .exec()
+
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                users,
+                count: users.length
+            }
+        })
+    } catch (error) {
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+/**
  * Delete user method
  * @param {object} req - response object
  * @param {object} res - response object
