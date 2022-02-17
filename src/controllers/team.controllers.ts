@@ -60,6 +60,7 @@ export const AddTeam: RequestHandler = async (req: Request, res: Response): Prom
  */
 export const EditTeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
     const { teamName, teamMembers, description } = req.body;
+    const { teamId } = req.params;
     try {
         // @ts-ignore
         if (!req.user.isAdmin) {
@@ -69,7 +70,7 @@ export const EditTeam: RequestHandler = async (req: Request, res: Response): Pro
             })
         }
         const team = await Team.findByIdAndUpdate(
-            { _id: req.params.teamId },
+            { _id: teamId },
             {
                 $set: {
                     teamName,
@@ -97,6 +98,53 @@ export const EditTeam: RequestHandler = async (req: Request, res: Response): Pro
                 data: { message: messages.castError }
             })
         }
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+export const ViewATeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+    const { teamId } = req.params;
+    try {
+        const team = await Team.findById({ _id: teamId })
+            .select('_id teamName teamMembers description')
+            .exec();
+        if (!team) {
+            return res.status(404).json({
+                status: 'error',
+                data: { message: messages.notFound }
+            })
+        }
+        return res.status(200).json({
+            status: 'success',
+            body: team
+        })
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                status: 'error',
+                data: { message: messages.castError }
+            })
+        }
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+export const ViewAllTeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const teams = await Team.find()
+            .select('_id teamName teamMembers description')
+            .exec();
+        return res.status(200).json({
+            status: 'success',
+            data: { teams, count: teams.length }
+        })
+    } catch (error) {
         return res.status(400).json({
             status: 'error',
             data: { message: messages.error }
