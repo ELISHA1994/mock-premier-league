@@ -10,6 +10,7 @@ import {default as DGB, default as DBG} from "debug";
 import userRoute from "./routes/user.route";
 import connect from "./database/db";
 import {basicErrorHandler, handle404, normalize, onError, onListening} from "./utils/utils";
+import teamRoute from "./routes/team.route";
 
 dotenv.config();
 const debug = DGB('server:debug');
@@ -45,6 +46,7 @@ app.use(logger(process.env.REQUEST_LOG_FORMAT || 'common', {
 
 // API ROUTES
 app.use('/api/v1/user', userRoute);
+app.use('/api/v1', teamRoute);
 
 // Home Page
 app.get('/', (req: Request, res: Response) => {

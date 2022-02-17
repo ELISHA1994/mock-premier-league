@@ -1,4 +1,4 @@
-import express, {Request, Response, IRouter} from "express";
+import express, {IRouter} from "express";
 import runValidation from "../validators";
 import {userSigninValidator, userSignupValidator} from "../validators/auth.validator";
 import {CreateUser, DeleteUser, GetAllUser, GetUser, LoginUser} from "../controllers/user.controller";

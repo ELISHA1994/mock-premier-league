@@ -3,12 +3,12 @@ import mongoosePaginate from "mongoose-paginate";
 import uniqueValidator from "mongoose-unique-validator";
 
 interface IUser {
-    _id: string,
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string
-    isAdmin: boolean
+    _id: string;
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    isAdmin: boolean;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(

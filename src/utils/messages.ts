@@ -1,21 +1,22 @@
 interface Messages {
-    welcome: string,
-    notFound: string,
-    serverError: string,
-    listenToServer: string,
-    failedToConnect: string,
-    connectedToDatabase: string,
-    duplicate: string,
-    error: string,
-    tokenExpired: string,
-    unAuthorized: string,
-    tokenError: string,
-    IncorrectLoginDetails: string,
-    userAuthorized: string,
-    userNotFound: string,
-    unAuthorizedRoute: string,
-    userDeleteMessage: string,
-    castError: string
+    welcome: string;
+    notFound: string;
+    serverError: string;
+    listenToServer: string;
+    failedToConnect: string;
+    connectedToDatabase: string;
+    duplicate: string;
+    error: string;
+    tokenExpired: string;
+    unAuthorized: string;
+    tokenError: string;
+    IncorrectLoginDetails: string;
+    userAuthorized: string;
+    userNotFound: string;
+    unAuthorizedRoute: string;
+    userDeleteMessage: string;
+    castError: string;
+    duplicateName: string;
 }
 
 const messages: Messages = {
@@ -36,6 +37,7 @@ const messages: Messages = {
     unAuthorizedRoute: 'You do not have permission to this route',
     userDeleteMessage: 'Successfully deleted',
     castError: 'Invalid ID',
+    duplicateName: 'team already exist',
 }
 
 export default messages
