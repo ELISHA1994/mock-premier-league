@@ -19,6 +19,9 @@ interface Messages {
     duplicateName: string;
     deleteMessage: string;
     updateMessage: string;
+    existingFixture: string;
+    sameTeam: string;
+    teamNotFound: string;
 }
 
 const messages: Messages = {
@@ -41,7 +44,10 @@ const messages: Messages = {
     castError: 'Invalid ID',
     duplicateName: 'team already exist',
     deleteMessage: 'Successfully deleted',
-    updateMessage: 'Successfully updated'
+    updateMessage: 'Successfully updated',
+    existingFixture: 'Same fixture exist',
+    sameTeam: "teamA and teamB can't be the same",
+    teamNotFound: 'one of the team is not available at the moment'
 }
 
 export default messages

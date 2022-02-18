@@ -5,22 +5,52 @@ import {names} from "debug";
 //     'attacking midfield', 'central forward', 'left midfielder', 'striker', 'defending', 'right midfielder'],
 
 enum RoleOptions {
-    goalKeeper = 'goal keeper',
-    centralBack = 'central back',
-    centralMidfield = 'central midfield',
-    centralForward = 'central forward',
-    leftWing = 'left wing',
-    attackingMidfield = 'attacking midfield',
-    leftMidfielder = 'left midfielder',
-    striker = 'striker',
-    defending = 'defending',
-    rightMidfielder = 'right midfielder'
+    goalKeeper = 'Goal Keeper',
+    centralBack = 'Central Back',
+    centralMidfield = 'Central Midfield',
+    centralForward = 'Central Forward',
+    leftWing = 'Left Wing',
+    attackingMidfield = 'Attacking Midfield',
+    leftMidfielder = 'Left Midfielder',
+    striker = 'Striker',
+    defending = 'Defending',
+    rightMidfielder = 'Right Midfielder'
+}
+
+enum TeamNameOptions {
+    AFCBournemouth = 'AFC Bournemouth',
+    Arsenal = 'Arsenal',
+    AstonVilla = 'Aston Villa',
+    BrightonHoveAlbion = 'Brighton & Hove Albion',
+    Burnley = 'Burnley',
+    Chelsea = 'Chelsea',
+    Everton = 'Everton',
+    LeicesterCity = 'Leicester City',
+    Liverpool = 'Liverpool',
+    ManchesterCity = 'Manchester City',
+    ManchesterUnited = 'Manchester United',
+    NewcastleUnited = 'Newcastle United',
+    NorwichCity = 'Norwich City',
+    SheffieldUnited = 'Sheffield United',
+    Southampton = 'Southampton',
+    TottenhamHotspur = 'Tottenham Hotspur',
+    Watford = 'Watford',
+    WestHamUnited = 'West Ham United',
+    WolverhamptonWanderers = 'Wolverhampton Wanderers'
+
 }
 export const addTeamValidator: Array<any> = [
     check('teamName')
         .not()
         .isEmpty()
         .withMessage('teamName is required'),
+    check('teamName')
+        .notEmpty()
+        .isString()
+        .custom((teamName: TeamNameOptions) => {
+            return Object.values(TeamNameOptions).includes(teamName)
+        })
+        .withMessage('Please provide a valid teamName'),
     check("teamMembers")
         .not()
         .isEmpty()

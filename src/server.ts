@@ -11,6 +11,7 @@ import userRoute from "./routes/user.route";
 import connect from "./database/db";
 import {basicErrorHandler, handle404, normalize, onError, onListening} from "./utils/utils";
 import teamRoute from "./routes/team.route";
+import fixtureRoute from "./routes/fixture.route";
 
 dotenv.config();
 const debug = DGB('server:debug');
@@ -47,6 +48,7 @@ app.use(logger(process.env.REQUEST_LOG_FORMAT || 'common', {
 // API ROUTES
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1', teamRoute);
+app.use('/api/v1', fixtureRoute);
 
 // Home Page
 app.get('/', (req: Request, res: Response) => {
@@ -67,3 +69,5 @@ server.on('request', (req: Request, res: Response) => {
 });
 server.on('error', onError);
 server.on('listening', onListening);
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjBlMTM5YmYxOTE0NjE1ZjM3NDdmMWQiLCJlbWFpbCI6ImFkbWluMkBnbWFpbC5jb20iLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NDUxOTk4OTUsImV4cCI6MTY0NTI4NjI5NX0.5Px1nWENIz-d3s4lOgvSdrgS8EvAqBi8U0ecp9Ofb6E
