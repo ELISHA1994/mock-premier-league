@@ -10,3 +10,4 @@ dist
 
 .idea/
 data/
+!/src/controllers/team.controller.ts
