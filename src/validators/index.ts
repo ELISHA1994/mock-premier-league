@@ -8,7 +8,7 @@ export default function runValidation(req: Request, res: Response, next: NextFun
     if (!errors.isEmpty()) {
         return res.status(400).json({
             status: 'error',
-            body: { message: errors.array()[0].msg }
+            data: { message: errors.array()[0].msg }
         });
     }
     next();

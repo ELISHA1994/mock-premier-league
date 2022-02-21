@@ -1,15 +1,8 @@
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate";
 import uniqueValidator from "mongoose-unique-validator";
+import {IUser} from "../global.types";
 
-interface IUser {
-    _id: string;
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    isAdmin: boolean;
-}
 
 const UserSchema = new mongoose.Schema<IUser>(
     {

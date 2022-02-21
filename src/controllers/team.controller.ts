@@ -2,6 +2,7 @@ import { Request, Response, RequestHandler } from "express";
 import mongoose from "mongoose";
 import Team from "../models/teamModel";
 import messages from "../utils/messages";
+import {IGetUserAuthInfoRequest} from "../global.types";
 
 /**
  * Admin can add team
@@ -20,7 +21,7 @@ export const AddTeam: RequestHandler = async (req: Request, res: Response): Prom
         if (!req.user.isAdmin) {
             return res.status(403).json({
                 status: 'error',
-                body: { message: messages.unAuthorizedRoute }
+                data: { message: messages.unAuthorizedRoute }
             })
         }
 
@@ -33,13 +34,13 @@ export const AddTeam: RequestHandler = async (req: Request, res: Response): Prom
         await team.save();
         return res.status(201).json({
             status: 'success',
-            data: team
+            data: { team: team }
         })
     } catch (error) {
-        if (error.errors.email.name === 'ValidatorError') {
+        if (error.errors.teamName.name === 'ValidatorError') {
             return res.status(409).json({
                 status: 'error',
-                data: { message: messages.duplicate }
+                data: { message: messages.duplicateName }
             })
         }
 
@@ -58,15 +59,15 @@ export const AddTeam: RequestHandler = async (req: Request, res: Response): Prom
  *
  * @example
  */
-export const EditTeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+export const EditTeam: RequestHandler = async (req: IGetUserAuthInfoRequest, res: Response): Promise<any> => {
     const { teamName, teamMembers, description } = req.body;
     const { teamId } = req.params;
     try {
-        // @ts-ignore
+
         if (!req.user.isAdmin) {
             return res.status(403).json({
                 status: 'error',
-                body: { message: messages.unAuthorizedRoute }
+                data: { message: messages.unAuthorizedRoute }
             })
         }
         const team = await Team.findByIdAndUpdate(
@@ -86,7 +87,7 @@ export const EditTeam: RequestHandler = async (req: Request, res: Response): Pro
                 data: { message: messages.notFound }
             })
         }
-        console.log(team);
+        // console.log(team);
         return res.status(200).json({
             status: 'success',
             data: { message: messages.updateMessage }
@@ -119,7 +120,7 @@ export const ViewATeam: RequestHandler = async (req: Request, res: Response): Pr
         }
         return res.status(200).json({
             status: 'success',
-            body: team
+            data: {team}
         })
     } catch (error) {
         if (error.name === 'CastError') {
@@ -160,26 +161,26 @@ export const ViewAllTeam: RequestHandler = async (req: Request, res: Response): 
  *
  * @example
  */
-export const RemoveTeam: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+export const RemoveTeam: RequestHandler = async (req: IGetUserAuthInfoRequest, res: Response): Promise<any> => {
     const { teamId } = req.params;
     try {
-        // @ts-ignore
+
         if (!req.user.isAdmin) {
             return res.status(403).json({
                 status: 'error',
-                body: { message: messages.unAuthorizedRoute }
+                data: { message: messages.unAuthorizedRoute }
             })
         }
         const team = await Team.findByIdAndDelete({ _id: teamId }).exec()
         if (!team) {
             return res.status(404).json({
                 status: 'error',
-                body: { message: messages.notFound }
+                data: { message: messages.notFound }
             })
         }
         return res.status(200).json({
             status: 'success',
-            body: { message: messages.deleteMessage }
+            data: { message: messages.deleteMessage }
         })
     } catch (error) {
         if (error.name === 'CastError') {

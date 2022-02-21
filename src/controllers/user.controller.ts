@@ -4,6 +4,7 @@ import User from "../models/userModel";
 import messages from "../utils/messages";
 import Helper from "../helpers/helperFunctions";
 import {generateToken} from "../middlewares/Authentication";
+import {IGetUserAuthInfoRequest} from "../global.types";
 
 /**
  * Create user method
@@ -13,7 +14,7 @@ import {generateToken} from "../middlewares/Authentication";
  *
  * @example
  */
-export const CreateUser: RequestHandler = async (req: Request, res: Response) => {
+export const CreateUser: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     //Todo: Remove isAdmin
     const {
         email, password, firstName, lastName, isAdmin
@@ -30,10 +31,10 @@ export const CreateUser: RequestHandler = async (req: Request, res: Response) =>
         const token = generateToken(user._id, user.email, user.isAdmin);
 
         await user.save();
-        console.log("User", user);
         return res.status(201).json({
             status: "success",
             data: {
+                message: messages.user,
                 token
             }
         })
@@ -60,7 +61,7 @@ export const CreateUser: RequestHandler = async (req: Request, res: Response) =>
  *
  * @example
  */
-export const LoginUser: RequestHandler = async (req: Request, res: Response) => {
+export const LoginUser: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     const { password, email } = req.body;
     try {
         const user = await User.findOne({ email }).exec();
@@ -72,7 +73,7 @@ export const LoginUser: RequestHandler = async (req: Request, res: Response) => 
         }
         // compare user provided password against db
         if (!Helper.comparePassword(user.password, password)) {
-            return res.status(404).json({
+            return res.status(400).json({
                 status: 'error',
                 data: { message: messages.IncorrectLoginDetails }
             })
@@ -81,6 +82,7 @@ export const LoginUser: RequestHandler = async (req: Request, res: Response) => 
         const token = generateToken(user._id, user.email, user.isAdmin)
         // Sanitise user object
         const userObject: any = {
+            _id: user._id,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -108,14 +110,13 @@ export const LoginUser: RequestHandler = async (req: Request, res: Response) => 
  *
  * @example
  */
-export const GetUser: RequestHandler = async (req: Request, res: Response) => {
+export const GetUser: RequestHandler = async (req: IGetUserAuthInfoRequest, res: Response): Promise<Response> => {
     const { userId } = req.params;
     try {
-        // @ts-ignore
         if (!req.user.isAdmin) {
             return res.status(403).json({
                 status: 'error',
-                body: { message: messages.unAuthorizedRoute }
+                data: { message: messages.unAuthorizedRoute }
             })
         }
         const user = await User.findById({ _id: userId })
@@ -154,13 +155,13 @@ export const GetUser: RequestHandler = async (req: Request, res: Response) => {
  *
  * @example
  */
-export const GetAllUser: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+export const GetAllUser: RequestHandler = async (req: IGetUserAuthInfoRequest, res: Response): Promise<Response> => {
     try {
-        // @ts-ignore
+
         if (!req.user.isAdmin) {
             return res.status(403).json({
                 status: 'error',
-                body: { message: messages.unAuthorizedRoute }
+                data: { message: messages.unAuthorizedRoute }
             })
         }
         const users = await User.find()
@@ -190,14 +191,14 @@ export const GetAllUser: RequestHandler = async (req: Request, res: Response): P
  *
  * @example
  */
-export const DeleteUser: RequestHandler = async (req: Request, res: Response) => {
+export const DeleteUser: RequestHandler = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { userId } = req.params;
     try {
-        // @ts-ignore
+
         if (!req.user.isAdmin) {
             return res.status(403).json({
                 status: 'error',
-                body: { message: messages.unAuthorizedRoute }
+                data: { message: messages.unAuthorizedRoute }
             })
         }
         const user = await User.findOneAndDelete({ _id: userId }).exec();

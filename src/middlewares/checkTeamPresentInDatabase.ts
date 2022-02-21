@@ -12,7 +12,7 @@ const checkTeamPresentInDatabase: RequestHandler = async (req: Request, res: Res
         if (team1.length <= 0 || team2.length <= 0) {
             return res.status(404).json({
                 status: 'error',
-                message: messages.teamNotFound
+                data: {message: messages.teamNotFound}
             })
         }
         return next();

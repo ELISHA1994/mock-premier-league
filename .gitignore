@@ -11,3 +11,7 @@ dist
 .idea/
 data/
 !/src/controllers/team.controller.ts
+# editor files
+# editor files
+.vscode/
+data/

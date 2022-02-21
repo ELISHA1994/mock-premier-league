@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import messages from "../utils/messages";
 import User from "../models/userModel";
+import {IGetUserAuthInfoRequest} from "../global.types";
 
 export  function generateToken(_id: string, email: string, isAdmin: boolean): string {
     return jwt.sign(
@@ -11,7 +12,7 @@ export  function generateToken(_id: string, email: string, isAdmin: boolean): st
     );
 }
 
-export async function verifyToken(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function verifyToken(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction): Promise<any> {
     try {
         if (!req.headers.authorization) {
             return res.status(401).json({

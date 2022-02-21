@@ -62,7 +62,9 @@ export function handle404(req: Request, res: Response): void {
 //     return res.status()
 // }
 export const basicErrorHandler: ErrorRequestHandler = (err: Errback, req: Request, res:  Response, next: NextFunction) => {
-    console.error("Error: ", err);
+    if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production'){
+        console.error("Error: ", err);
+    }
     return res.status(500).json({
         status: 'error',
         data: { message: messages.serverError }

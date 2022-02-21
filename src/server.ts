@@ -1,8 +1,10 @@
 import http from "http";
 import path from "path";
-import express, {Request, Response, Application} from 'express';
+import express, {Request, Response, Application, Errback} from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
+import * as redis from "redis";
+import responseTime from "response-time";
 import {default as logger} from 'morgan'
 import { createStream } from "rotating-file-stream";
 import {default as DGB, default as DBG} from "debug";
@@ -12,6 +14,7 @@ import connect from "./database/db";
 import {basicErrorHandler, handle404, normalize, onError, onListening} from "./utils/utils";
 import teamRoute from "./routes/team.route";
 import fixtureRoute from "./routes/fixture.route";
+import messages from "./utils/messages";
 
 dotenv.config();
 const debug = DGB('server:debug');
@@ -20,7 +23,21 @@ const debug = DGB('server:debug');
 /**
  * Create Express instance
  */
-const app: Application = express();
+export const app: Application = express();
+
+if (process.env.NODE_ENV !== 'test') {
+// create and connect redis client to local instance.
+    const client = redis.createClient();
+    // debug(client)
+
+    app.use(responseTime());
+
+    // Print redis errors to the console
+    client.on('error', (err: Errback, res: Response) => res.status(400).json({
+        status: 'error',
+        data: { message: messages.runtimeErr }
+    }));
+}
 
 // Db connectivity
 // @ts-ignore
@@ -52,7 +69,10 @@ app.use('/api/v1', fixtureRoute);
 
 // Home Page
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!');
+    res.status(200).json({
+        status: 'success',
+        data: { message: messages.welcome }
+    });
 });
 
 
@@ -70,4 +90,4 @@ server.on('request', (req: Request, res: Response) => {
 server.on('error', onError);
 server.on('listening', onListening);
 
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjBlMTM5YmYxOTE0NjE1ZjM3NDdmMWQiLCJlbWFpbCI6ImFkbWluMkBnbWFpbC5jb20iLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NDUxOTk4OTUsImV4cCI6MTY0NTI4NjI5NX0.5Px1nWENIz-d3s4lOgvSdrgS8EvAqBi8U0ecp9Ofb6E
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjBlMTM5YmYxOTE0NjE1ZjM3NDdmMWQiLCJlbWFpbCI6ImFkbWluMkBnbWFpbC5jb20iLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NDUzOTI0MTMsImV4cCI6MTY0NTQ3ODgxM30.ZiT-KSsADPuDImDT-UUZu8eBT-oy6wmeou3ehlSSca8
