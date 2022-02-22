@@ -32,7 +32,13 @@ let RedisStore = connectRedis(session);
 
 if (process.env.NODE_ENV !== 'test') {
 // create and connect redis client to local instance.
-    const redisClient = createClient();
+    const redisClient = createClient({
+        url: process.env.REDIS_URL
+    });
+
+    (async () => {
+        await redisClient.connect();
+    })();
 
     app.use(
         session({
