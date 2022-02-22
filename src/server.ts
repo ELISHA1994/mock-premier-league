@@ -3,8 +3,8 @@ import path from "path";
 import express, {Request, Response, Application, Errback} from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
-import * as redis from "redis";
-import connectRedis, {RedisStore} from 'connect-redis';
+import {createClient} from "redis";
+import connectRedis from 'connect-redis';
 import session from 'express-session';
 import responseTime from "response-time";
 import {default as logger} from 'morgan'
@@ -18,6 +18,7 @@ import teamRoute from "./routes/team.route";
 import fixtureRoute from "./routes/fixture.route";
 import messages from "./utils/messages";
 
+
 dotenv.config();
 const debug = DGB('server:debug');
 // const dbgerror = DGB('server:dbgerror');
@@ -27,15 +28,15 @@ const debug = DGB('server:debug');
  */
 export const app: Application = express();
 
-let RedisStore: RedisStore = connectRedis(session);
+let RedisStore = connectRedis(session);
 
 if (process.env.NODE_ENV !== 'test') {
 // create and connect redis client to local instance.
-    const client = redis.createClient();
+    const redisClient = createClient();
 
     app.use(
         session({
-            store: new RedisStore({ client }),
+            store: new RedisStore({ client: redisClient }),
             secret: process.env.SECRET_KEY,
             resave: false,
             saveUninitialized: true
@@ -44,12 +45,12 @@ if (process.env.NODE_ENV !== 'test') {
 
     app.use(responseTime());
 
-    client.on('connect', () => {
+    redisClient.on('connect', () => {
         console.log('Redis client connected');
     });
 
     // Print redis errors to the console
-    client.on('error', (err) => {
+    redisClient.on('error', (err) => {
         // eslint-disable-next-line no-console
         console.log(`Error ${err}`);
     });
