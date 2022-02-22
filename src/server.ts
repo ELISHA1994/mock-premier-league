@@ -4,6 +4,8 @@ import express, {Request, Response, Application, Errback} from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
 import * as redis from "redis";
+import connectRedis, {RedisStore} from 'connect-redis';
+import session from 'express-session';
 import responseTime from "response-time";
 import {default as logger} from 'morgan'
 import { createStream } from "rotating-file-stream";
@@ -25,18 +27,32 @@ const debug = DGB('server:debug');
  */
 export const app: Application = express();
 
+let RedisStore: RedisStore = connectRedis(session);
+
 if (process.env.NODE_ENV !== 'test') {
 // create and connect redis client to local instance.
     const client = redis.createClient();
-    // debug(client)
+
+    app.use(
+        session({
+            store: new RedisStore({ client }),
+            secret: process.env.SECRET_KEY,
+            resave: false,
+            saveUninitialized: true
+        })
+    );
 
     app.use(responseTime());
 
+    client.on('connect', () => {
+        console.log('Redis client connected');
+    });
+
     // Print redis errors to the console
-    client.on('error', (err: Errback, res: Response) => res.status(400).json({
-        status: 'error',
-        data: { message: messages.runtimeErr }
-    }));
+    client.on('error', (err) => {
+        // eslint-disable-next-line no-console
+        console.log(`Error ${err}`);
+    });
 }
 
 // Db connectivity
