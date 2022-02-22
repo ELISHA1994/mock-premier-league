@@ -3,9 +3,11 @@ import path from "path";
 import express, {Request, Response, Application, Errback} from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
-import {createClient} from "redis";
+import * as redis from "redis";
 import connectRedis from 'connect-redis';
 import session from 'express-session';
+import limiter from "./config/express-rate-limit";
+import cookieParser from 'cookie-parser';
 import responseTime from "response-time";
 import {default as logger} from 'morgan'
 import { createStream } from "rotating-file-stream";
@@ -28,49 +30,56 @@ const debug = DGB('server:debug');
  */
 export const app: Application = express();
 
-let RedisStore = connectRedis(session);
-
-// if (process.env.NODE_ENV !== 'test') {
-// // create and connect redis client to local instance.
-//     const redisClient = createClient({
-//         url: process.env.REDIS_URL
-//
-//     });
-//
-//     (async () => {
-//         await redisClient.connect();
-//     })();
-//
-//     app.use(
-//         session({
-//             store: new RedisStore({ client: redisClient }),
-//             secret: process.env.SECRET_KEY,
-//             resave: false,
-//             saveUninitialized: true
-//         })
-//     );
-//
-//     app.use(responseTime());
-//
-//     redisClient.on('connect', () => {
-//         console.log('Redis client connected');
-//     });
-//
-//     // Print redis errors to the console
-//     redisClient.on('error', (err) => {
-//         // eslint-disable-next-line no-console
-//         console.log(`Error ${err}`);
-//     });
-// }
-
 // Db connectivity
 // @ts-ignore
 connect();
+
+if (process.env.NODE_ENV !== 'test') {
+    const redisUri = `${process.env.REDIS_URL}`;
+    const redisStore = connectRedis(session);
+
+    const clientConnect = async () => {
+        const client = await redis.createClient({
+            url: redisUri
+        });
+
+        await client.connect()
+
+        // creating new redis store for sessioning.
+        app.use(
+            session({
+                secret: process.env.SECRET_KEY,
+                store: new redisStore({
+                    host: process.env.REDIS_HOST,
+                    port: process.env.REDIS_PORT,
+                    client,
+                    ttl: 1800,
+                }),
+                saveUninitialized: false,
+                resave: false,
+            })
+        );
+
+        client.on('connect', () => {
+            debug('Redis client connected');
+        });
+
+        client.on('error', (err) => {
+            console.error(err);
+        });
+    };
+
+    clientConnect().then()
+    app.use(responseTime());
+}
+
 
 // Setting api Port;
 export const port = normalize(process.env.PORT || '1337');
 app.set('port', port);
 
+// limit IP api request
+app.use(limiter);
 // Setting middlewares
 app.use(cors())
 app.use(express.json());
