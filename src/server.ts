@@ -83,6 +83,7 @@ app.use(limiter);
 // Setting middlewares
 app.use(cors())
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(logger(process.env.REQUEST_LOG_FORMAT || 'common', {
     stream: process.env.REQUEST_LOG_FILE  || 'log.txt' ?
