@@ -2,7 +2,7 @@ import express, {IRouter} from "express";
 import runValidation from "../validators";
 import {verifyToken} from "../middlewares/Authentication";
 import {addTeamValidator, updateTeamValidator} from "../validators/team.validator";
-import {AddTeam, EditTeam, RemoveTeam, ViewAllTeam, ViewATeam} from "../controllers/team.controller";
+import {AddTeam, EditTeam, RemoveTeam, SearchTeam, ViewAllTeam, ViewATeam} from "../controllers/team.controller";
 
 const router: IRouter = express.Router();
 
@@ -20,6 +20,9 @@ router.get('/teams', verifyToken, ViewAllTeam)
 
 // remove a team
 router.delete('/team/:teamId', verifyToken, RemoveTeam)
+
+// search team robustly
+router.post('/teams/search',  SearchTeam)
 
 
 export default router;

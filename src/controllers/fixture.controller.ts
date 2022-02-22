@@ -210,7 +210,7 @@ export const ViewCompletedFixture: RequestHandler = async (req: IGetUserAuthInfo
         ).exec();
         return res.status(200).json({
             status: 'success',
-            body: {
+            data: {
                 fixture,
                 count: fixture.length
             }
@@ -230,11 +230,44 @@ export const ViewPendingFixture: RequestHandler = async (req: IGetUserAuthInfoRe
         ).exec();
         return res.status(200).json({
             status: 'success',
-            body: {
+            data: {
                 fixture,
                 count: fixture.length
             }
         })
+    } catch (error) {
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}
+
+export const SearchFixture: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
+    const {
+        name, date, status
+    } = req.body;
+    let { stadium } = req.body;
+    try {
+        if (name || date || stadium || status) {
+            stadium = new RegExp(`^${stadium}$`, 'i');
+            const fixture = await Fixture.find({
+                $or: [
+                    { status },
+                    { 'teamA.0.name': new RegExp(`^${name}$`, 'i') },
+                    { 'teamB.0.name': new RegExp(`^${name}$`, 'i') },
+                    { matchInfo: { $elemMatch: { date, stadium } } }
+                ]
+            })
+                .exec();
+            return res.status(200).json({
+                status: 'success',
+                data: {
+                    fixture,
+                    count: fixture.length
+                }
+            })
+        }
     } catch (error) {
         return res.status(400).json({
             status: 'error',

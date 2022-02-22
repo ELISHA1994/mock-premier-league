@@ -88,6 +88,10 @@ npm test
 
 `- GET /api/v1/fixtures/pending User can view all pending fixtures`
 
+`- POST /api/v1/fxtures/search User can search fixture robustly`
+
+`- POST /api/v1/teams/search User can search team robustly`
+
 ## API
 
 The API is hosted at

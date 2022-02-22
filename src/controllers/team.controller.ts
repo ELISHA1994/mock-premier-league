@@ -195,3 +195,35 @@ export const RemoveTeam: RequestHandler = async (req: IGetUserAuthInfoRequest, r
         })
     }
 }
+
+export const SearchTeam: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
+    const {
+        name, role, description, memberName
+    } = req.body;
+    try {
+        if (name || role || description || memberName) {
+            const team = await Team.find({
+                $or: [
+                    { teamName: new RegExp(`^${name}$`, 'i') },
+                    { description: new RegExp(`^${description}$`, 'i') },
+                    { 'teamMembers.0.name': new RegExp(`^${name}$`, 'i') },
+                    { 'teamMembers.0.role': new RegExp(`^${role}$`, 'i') }
+                ]
+            })
+                .exec();
+
+            return res.status(200).json({
+                status: 'success',
+                data: {
+                    team,
+                    count: team.length
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(400).json({
+            status: 'error',
+            data: { message: messages.error }
+        })
+    }
+}

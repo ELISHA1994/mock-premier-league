@@ -6,7 +6,7 @@ import checkTeamPresentInDatabase from "../middlewares/checkTeamPresentInDatabas
 import {
     AddFixture,
     EditFixture,
-    RemoveFixture,
+    RemoveFixture, SearchFixture,
     ViewAFixture,
     ViewAllFixture,
     ViewCompletedFixture, ViewPendingFixture
@@ -52,5 +52,8 @@ router.get('/fixtures/completed', verifyToken, ViewCompletedFixture)
 
 // view all pending fixture route
 router.get('/fixtures/pending', verifyToken, ViewPendingFixture)
+
+// search fixture robustly
+router.post('/fixtures/search', SearchFixture)
 
 export default router;
