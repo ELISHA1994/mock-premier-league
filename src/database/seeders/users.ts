@@ -100,5 +100,5 @@ db.usermodels.insertMany([
 //     "lastName": "Admin",
 //     "email": "admin1@gmail.com",
 //     "password": "Elisha1994$",
-//     "isAdim": true
+//     "isAdmin": true
 // }

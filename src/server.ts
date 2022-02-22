@@ -30,37 +30,38 @@ export const app: Application = express();
 
 let RedisStore = connectRedis(session);
 
-if (process.env.NODE_ENV !== 'test') {
-// create and connect redis client to local instance.
-    const redisClient = createClient({
-        url: process.env.REDIS_URL
-    });
-
-    (async () => {
-        await redisClient.connect();
-    })();
-
-    app.use(
-        session({
-            store: new RedisStore({ client: redisClient }),
-            secret: process.env.SECRET_KEY,
-            resave: false,
-            saveUninitialized: true
-        })
-    );
-
-    app.use(responseTime());
-
-    redisClient.on('connect', () => {
-        console.log('Redis client connected');
-    });
-
-    // Print redis errors to the console
-    redisClient.on('error', (err) => {
-        // eslint-disable-next-line no-console
-        console.log(`Error ${err}`);
-    });
-}
+// if (process.env.NODE_ENV !== 'test') {
+// // create and connect redis client to local instance.
+//     const redisClient = createClient({
+//         url: process.env.REDIS_URL
+//
+//     });
+//
+//     (async () => {
+//         await redisClient.connect();
+//     })();
+//
+//     app.use(
+//         session({
+//             store: new RedisStore({ client: redisClient }),
+//             secret: process.env.SECRET_KEY,
+//             resave: false,
+//             saveUninitialized: true
+//         })
+//     );
+//
+//     app.use(responseTime());
+//
+//     redisClient.on('connect', () => {
+//         console.log('Redis client connected');
+//     });
+//
+//     // Print redis errors to the console
+//     redisClient.on('error', (err) => {
+//         // eslint-disable-next-line no-console
+//         console.log(`Error ${err}`);
+//     });
+// }
 
 // Db connectivity
 // @ts-ignore
