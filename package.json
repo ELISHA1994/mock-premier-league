@@ -4,7 +4,7 @@
   "description": "API that serves the latest scores of fixtures of matches in a “Mock Premier League”",
   "main": "dist/server.js",
   "scripts": {
-    "start": "tsc && cross-env DEBUG=server:* node ./dist/server.js",
+    "start": "cross-env DEBUG=server:* node ./dist/server.js",
     "dev": "cross-env NODE_ENV=production DEBUG=server:* ts-node ./src/server.ts",
     "build": "tsc -p .",
     "start:dev": "cross-env DEBUG=server:* nodemon ./src/server.ts",
