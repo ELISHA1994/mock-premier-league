@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import { server } from "../../server";
 import messages from "../../utils/messages";
 import {
-    createTeam, adminLogin, login, adminsignup
+    createTeam, adminLogin, login, adminsignup, searchTeam
 } from "../model/teamModel";
 import {signup} from "../model/userModel";
+import {searchFixtures} from "../model/fixtureModel";
 
 const request = supertest(server);
 
@@ -274,5 +275,15 @@ describe("Team Routes", () => {
         expect(res.status).toEqual(500);
         expect(res.body.status).toEqual('error');
         expect(res.body.data.message).toEqual(messages.serverError);
+    })
+
+    test("should search team robustly", async () => {
+        const res = await request
+            .post(`${teamsUrl}/search`)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .send(searchFixtures);
+        expect(res.status).toEqual(200);
+        expect(res.body.status).toEqual('success');
     })
 })

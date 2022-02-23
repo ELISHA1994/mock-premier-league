@@ -11,7 +11,8 @@
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles -c ./jest.unit.json",
     "test:coverage": "cross-env NODE_ENV=test jest --detectOpenHandles --coverage -c ./jest.unit.json",
     "seed": "tsc && cross-env DEBUG=server:* node dist/database/seeders/users.js",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "docker-build": "docker build --no-cache -t app ."
   },
   "keywords": [],
   "author": "",
@@ -52,7 +53,7 @@
     "express-validator": "^6.14.0",
     "ioredis": "^4.28.5",
     "jsonwebtoken": "^8.5.1",
-    "moment": "2.24.0",
+    "moment": "2.24.0"  ,
     "mongodb": "^4.4.0",
     "mongoose": "^6.2.1",
     "mongoose-paginate": "^5.0.3",

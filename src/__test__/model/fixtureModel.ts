@@ -21,6 +21,13 @@ interface ICreateTeam {
     teamMembers: Array<any>
 }
 
+interface ISearchFixtures {
+    name: string;
+    status: string;
+    stadium: string;
+    date: string;
+}
+
 const adminsignup: ISignup = {
     email: 'admin@premierleague.com',
     password: 'Elisha27',
@@ -73,6 +80,22 @@ const signup: ISignup = {
     isAdmin: false
 };
 
+const searchFixtures: ISearchFixtures = {
+    name: "Arsenal",
+    status: "",
+    stadium: "",
+    date: ""
+}
+
 export {
-    createFixture, adminLogin, login, sameTeam, validFixture, signup, adminsignup, createTeamA, createTeamB
+    createFixture,
+    adminLogin,
+    login,
+    sameTeam,
+    validFixture,
+    signup,
+    adminsignup,
+    createTeamA,
+    createTeamB,
+    searchFixtures
 };

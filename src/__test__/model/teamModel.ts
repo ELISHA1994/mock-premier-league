@@ -16,6 +16,13 @@ interface ILogin {
     password: string;
 }
 
+interface ISearchTeam {
+    name: string;
+    role: string;
+    description: string;
+    memberName: string;
+}
+
 const adminsignup: ISignup = {
     email: 'admin@premierleague.com',
     password: 'Elisha27',
@@ -39,5 +46,11 @@ const login: ILogin = {
     password: 'Elisha27'
 };
 
+const searchTeam: ISearchTeam = {
+    name: "Sead Kolasinac",
+    role: "",
+    description: "",
+    memberName: ""
+};
 
-export { createTeam, adminLogin, login, adminsignup };
+export { createTeam, adminLogin, login, adminsignup, searchTeam };

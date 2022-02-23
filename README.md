@@ -43,6 +43,19 @@ cd mock-premier-league
 npm install
 npm run start:dev
 ```
+## Login as an admin or create a user account
+
+```sh
+- email `admin1@gmail.com`
+- password `Elisha27$`
+```
+
+## Docker Development Setup
+
+- Install Docker
+- Change to application root directory
+- Build a docker image with the following command `docker build -t mock-premier-league .`
+- Run `docker-compose up`
 
 ## Testing
 

@@ -7,6 +7,7 @@ import {
     createFixture, adminLogin, login, sameTeam, validFixture, signup, adminsignup, createTeamB
 } from "../model/fixtureModel";
 import {createTeamA} from "../model/fixtureModel";
+import {searchTeam} from "../model/teamModel";
 
 const request = supertest(server);
 
@@ -346,6 +347,16 @@ describe("Fixture Route", () => {
             expect(res.body.status).toEqual('error');
             expect(res.body.data.message).toEqual(messages.notFound);
         }, 30000)
+
+        test("should search team robustly", async () => {
+            const res = await request
+                .post(`${fixturesUrl}/search`)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json')
+                .send(searchTeam);
+            expect(res.status).toEqual(200);
+            expect(res.body.status).toEqual('success');
+        })
     })
 
 })
